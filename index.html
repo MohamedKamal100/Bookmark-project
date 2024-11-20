@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Mark</title>
+    <!-- *Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=PT+Sans+Caption:wght@400;700&family=Pacifico&family=Righteous&display=swap"
+      rel="stylesheet"
+    />
+    <!-- *Style CSs -->
+    <link rel="stylesheet" href="css/all.min.css" />
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body class="main-bg">
+    <div
+      class="container d-flex flex-column align-items-center justify-content-center py-5"
+    >
+      <h1 class="position-relative py-3">Bookmarker</h1>
+      <div
+        class="content w-100 p-3 py-4 mt-5 d-flex flex-column justify-content-center align-items-center"
+      >
+        <h2 class="pb-4">
+          <i class="fa-solid fa-bookmark"></i>
+          Bookmark your Favourite Sites
+          <i class="fa-solid fa-bookmark"></i>
+        </h2>
+        <div
+          class="siteName pb-4 w-100 d-flex flex-column justify-content-center"
+        >
+          <label for="siteName " class="pb-2 fw-semibold">
+            <i class="fa-solid fa-book-bookmark pe-2"></i>
+            Site Name
+          </label>
+          <input
+            type="text"
+            class="form-control"
+            id="siteName"
+            name="siteName"
+            placeholder="Bookmark Name"
+          />
+        </div>
+        <div
+          class="siteUrl pb-4 w-100 d-flex flex-column justify-content-center"
+        >
+          <label for="siteUrl " class="pb-2 fw-semibold">
+            <i class="fa-solid fa-link pe-2"></i>
+            Site URL
+          </label>
+          <input
+            type="url"
+            class="form-control"
+            id="siteUrl"
+            placeholder="Website URL"
+            name="siteUrl"
+          />
+        </div>
+        <button
+          onclick="addBookmark()"
+          type="button"
+          class="btn btn-submit px-5"
+          id="submitBtn"
+        >
+          Submit
+        </button>
+        <input
+          type="text"
+          class="form-control my-3"
+          placeholder="Search"
+          onkeyup="search(this.value)"
+        />
+      </div>
+      <table class="table mt-4 text-center bg-light">
+        <thead>
+          <tr>
+            <th class="text-capitalize">index</th>
+            <th class="text-capitalize">Website Name</th>
+            <th class="text-capitalize">Visit</th>
+            <th class="text-capitalize">Delete</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyContent"></tbody>
+      </table>
+    </div>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/index.js"></script>
+  </body>
+</html>

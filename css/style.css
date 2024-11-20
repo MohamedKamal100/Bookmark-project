@@ -1,0 +1,62 @@
+.main-bg {
+  background-color: #f7ecde;
+}
+body {
+  font-family: "PT Sans Caption", sans-serif;
+}
+::selection {
+  background-color: #fec260;
+  color: #352e28;
+}
+/* ============================================ */
+
+h1 {
+  font-family: "Pacifico", cursive;
+  color: #352e28;
+  font-size: 50px;
+  font-weight: 500;
+  line-height: 60px;
+}
+h1::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+  bottom: 10px;
+  background-color: #fec260;
+  height: 22%;
+  z-index: -1;
+  transition: height 300ms;
+}
+h1:hover::after {
+  height: 50%;
+}
+
+.content {
+  border-style: dotted;
+  border-width: 2px 0 2px;
+  color: #352e28;
+}
+
+.content h2 {
+  font-family: "Righteous", cursive;
+  font-size: 25px;
+  background-image: linear-gradient(to right, #3ca55c, #b5ac49);
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* =======================buttons================ */
+.form-control:focus {
+  box-shadow: 0 0 0 0.25rem #fec16092;
+}
+.content .btn-submit {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: #d1512d;
+  --bs-btn-border-color: #d1512d;
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: #bb4120;
+  --bs-btn-hover-border-color: #a03315;
+}
