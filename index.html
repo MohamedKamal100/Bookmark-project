@@ -42,7 +42,11 @@
             id="siteName"
             name="siteName"
             placeholder="Bookmark Name"
+            oninput="validate(/^\w{3,20}$/,this.value,nameAlert,this)"
           />
+          <p class="text-danger d-none my-2" id="nameAlert">
+            At Least 3 char To 20 Char..
+          </p>
         </div>
         <div
           class="siteUrl pb-4 w-100 d-flex flex-column justify-content-center"
@@ -57,7 +61,12 @@
             id="siteUrl"
             placeholder="Website URL"
             name="siteUrl"
+            oninput="validate(/^(https?:\/\/)?(w{3}\.)?\w+\.\w{2,}\/?(:\d{2,5})?(\/\w+)*$/,this.value,urlAlert,this)"
           />
+          <p class="text-danger d-none my-2" id="urlAlert">
+            URL is invalid !!
+            <span class="text-secondary">https://www.example.com</span>
+          </p>
         </div>
         <button
           onclick="addBookmark()"
@@ -87,6 +96,8 @@
       </table>
     </div>
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script src="js/index.js"></script>
   </body>
 </html>
