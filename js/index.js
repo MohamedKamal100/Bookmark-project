@@ -169,13 +169,3 @@ function capitalize(str) {
   strArr[0] = strArr[0].toUpperCase();
   return strArr.join("");
 }
-
-function visitWebsite(e) {
-  var websiteIndex = e.target.dataset.index;
-  var httpsRegex = /^https?:\/\//;
-  if (httpsRegex.test(bookmarks[websiteIndex].siteURL)) {
-    open(bookmarks[websiteIndex].siteURL);
-  } else {
-    open(`https://${bookmarks[websiteIndex].siteURL}`);
-  }
-}
