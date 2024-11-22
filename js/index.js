@@ -43,7 +43,7 @@ function displayBookmark() {
     <td>${i + 1}</td>
     <td>${bookmarkContainers[i].siteName}</td>
     <td>
-    <a class="btn btn-danger" href="https://www.${
+    <a target="_blank" class="btn btn-danger" href="https://www.${
       bookmarkContainers[i].siteUrl
     }">
     <i class="fa-solid fa-eye pe-2"></i> Visit</a></td>
@@ -93,7 +93,7 @@ function search(inputValue) {
                 `<span class="text-primary">${inputValue}</span>`
               )}</td>
              <td>
-    <a class="btn btn-danger" href="https://www.${
+    <a target="_blank" class="btn btn-danger" href="https://www.${
       bookmarkContainers[i].siteUrl
     }">
     <i class="fa-solid fa-eye pe-2"></i> Visit</a></td>
