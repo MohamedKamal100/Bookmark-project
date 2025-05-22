@@ -6,47 +6,69 @@ var siteUrlInput = document.getElementById("siteUrl")
 var bookmarkTbody = document.getElementById("tbodyContent")
 var nameAlert = document.getElementById("nameAlert")
 var urlAlert = document.getElementById("urlAlert")
+var submitBtn = document.getElementById("submitBtn")
+var updateBtn = document.getElementById("updateBtn")
+var cancelBtn = document.getElementById("cancelBtn")
+var themeToggle = document.getElementById("themeToggle")
 var Swal = window.Swal // Assuming Swal is available globally, e.g., from a CDN
 
 var bookmarkContainers = []
-var bookmarkLimit = "all" // Default to show all bookmarks
+var currentEditIndex = -1 // Track which bookmark is being edited
 
+// Load bookmarks from localStorage
 if (localStorage.getItem("bookmarks") != null) {
   bookmarkContainers = JSON.parse(localStorage.getItem("bookmarks"))
   displayBookmark()
 }
 
-// Typewriter effect for the title
-function typewriterEffect() {
-  const title = document.getElementById("typewriter-title")
-  const text = title.textContent
-  title.textContent = ""
-  title.style.opacity = "1"
-
-  // Split text into characters and create spans
-  for (let i = 0; i < text.length; i++) {
-    const span = document.createElement("span")
-    span.className = "char"
-    span.textContent = text[i]
-    title.appendChild(span)
+// Load theme preference from localStorage
+function loadTheme() {
+  const savedTheme = localStorage.getItem("theme")
+  if (savedTheme === "dark") {
+    document.documentElement.classList.add("dark-mode")
+    document.documentElement.classList.remove("light-mode")
+    themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>'
+  } else {
+    document.documentElement.classList.add("light-mode")
+    document.documentElement.classList.remove("dark-mode")
+    themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>'
   }
+}
 
-  // Animate each character
-  const chars = document.querySelectorAll(".char")
-  chars.forEach((char, index) => {
+// Toggle theme
+function toggleTheme() {
+  if (document.documentElement.classList.contains("light-mode")) {
+    document.documentElement.classList.remove("light-mode")
+    document.documentElement.classList.add("dark-mode")
+    localStorage.setItem("theme", "dark")
+    themeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>'
+
+    // Add animation to theme change
+    document.body.classList.add("animate__animated", "animate__fadeIn")
     setTimeout(() => {
-      char.classList.add("visible")
-    }, 100 * index)
-  })
+      document.body.classList.remove("animate__animated", "animate__fadeIn")
+    }, 1000)
+
+    // Restart typewriter effect
+    typewriterEffect()
+  } else {
+    document.documentElement.classList.remove("dark-mode")
+    document.documentElement.classList.add("light-mode")
+    localStorage.setItem("theme", "light")
+    themeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>'
+
+    // Add animation to theme change
+    document.body.classList.add("animate__animated", "animate__fadeIn")
+    setTimeout(() => {
+      document.body.classList.remove("animate__animated", "animate__fadeIn")
+    }, 1000)
+
+    // Restart typewriter effect
+    typewriterEffect()
+  }
 }
 
-// Update bookmark limit
-function updateBookmarkLimit(limit) {
-  bookmarkLimit = limit
-  displayBookmark()
-}
-
-//Add function
+// Add bookmark function
 function addBookmark() {
   if (allValidateInput()) {
     var site = {
@@ -55,7 +77,6 @@ function addBookmark() {
     }
 
     // Add success animation
-    const submitBtn = document.getElementById("submitBtn")
     submitBtn.innerHTML = '<i class="fa-solid fa-check"></i> Added!'
     submitBtn.classList.add("animate__animated", "animate__rubberBand")
 
@@ -88,30 +109,149 @@ function addBookmark() {
       hideClass: {
         popup: "animate__animated animate__fadeOutUp",
       },
+      background: document.documentElement.classList.contains("dark-mode") ? "#1a1a2e" : "#fff",
+      color: document.documentElement.classList.contains("dark-mode") ? "#f0f0f0" : "#333",
     })
   }
+}
+
+// Edit bookmark function
+function editBookmark(index) {
+  // Store the current edit index
+  currentEditIndex = index
+
+  // Populate form with bookmark data
+  siteNameInput.value = bookmarkContainers[index].siteName
+  siteUrlInput.value = bookmarkContainers[index].siteUrl
+
+  // Validate inputs to show valid state
+  validate(/^\w{3,20}$/, siteNameInput.value, nameAlert, siteNameInput)
+  validate(/^(https?:\/\/)?(w{3}\.)?\w+\.\w{2,}\/?(:\d{2,5})?(\/\w+)*$/, siteUrlInput.value, urlAlert, siteUrlInput)
+
+  // Hide submit button, show update and cancel buttons
+  submitBtn.classList.add("d-none")
+  updateBtn.classList.remove("d-none")
+  cancelBtn.classList.remove("d-none")
+
+  // Scroll to form
+  document.querySelector(".content").scrollIntoView({ behavior: "smooth" })
+
+  // Highlight the row being edited
+  const rows = document.querySelectorAll("#tbodyContent tr")
+  rows.forEach((row, i) => {
+    if (i === index) {
+      row.classList.add("editing-row")
+    } else {
+      row.classList.remove("editing-row")
+    }
+  })
+
+  // Add animation to form
+  siteNameInput.classList.add("animate__animated", "animate__pulse")
+  siteUrlInput.classList.add("animate__animated", "animate__pulse")
+  setTimeout(() => {
+    siteNameInput.classList.remove("animate__animated", "animate__pulse")
+    siteUrlInput.classList.remove("animate__animated", "animate__pulse")
+  }, 1000)
+}
+
+// Update bookmark function
+function updateBookmark() {
+  if (currentEditIndex === -1) return
+
+  if (allValidateInput()) {
+    // Update the bookmark
+    bookmarkContainers[currentEditIndex] = {
+      siteName: capitalize(siteNameInput.value),
+      siteUrl: siteUrlInput.value,
+    }
+
+    // Save to localStorage
+    localStorage.setItem("bookmarks", JSON.stringify(bookmarkContainers))
+
+    // Show success animation
+    updateBtn.innerHTML = '<i class="fa-solid fa-check"></i> Updated!'
+    updateBtn.classList.add("animate__animated", "animate__rubberBand")
+
+    // Clear form and reset UI
+    setTimeout(() => {
+      clear()
+      updateBtn.innerHTML = "Update Bookmark"
+      updateBtn.classList.remove("animate__animated", "animate__rubberBand")
+      updateBtn.classList.add("d-none")
+      cancelBtn.classList.add("d-none")
+      submitBtn.classList.remove("d-none")
+      currentEditIndex = -1
+
+      // Display updated bookmarks
+      displayBookmark()
+
+      // Show success message
+      Swal.fire({
+        icon: "success",
+        title: "Bookmark Updated!",
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        background: document.documentElement.classList.contains("dark-mode") ? "#1a1a2e" : "#fff",
+        color: document.documentElement.classList.contains("dark-mode") ? "#f0f0f0" : "#333",
+      })
+    }, 1000)
+  } else {
+    Swal.fire({
+      icon: "error",
+      title: "Site Name or Url is not valid, Please follow the rules below :",
+      text: `Site name must contain at least 3 characters
+      
+      
+      &Site URL must be a valid one   EX: https://www.example.com`,
+      showClass: {
+        popup: "animate__animated animate__fadeInDown",
+      },
+      hideClass: {
+        popup: "animate__animated animate__fadeOutUp",
+      },
+      background: document.documentElement.classList.contains("dark-mode") ? "#1a1a2e" : "#fff",
+      color: document.documentElement.classList.contains("dark-mode") ? "#f0f0f0" : "#333",
+    })
+  }
+}
+
+// Cancel edit function
+function cancelEdit() {
+  clear()
+  updateBtn.classList.add("d-none")
+  cancelBtn.classList.add("d-none")
+  submitBtn.classList.remove("d-none")
+  currentEditIndex = -1
+
+  // Remove highlight from all rows
+  const rows = document.querySelectorAll("#tbodyContent tr")
+  rows.forEach((row) => row.classList.remove("editing-row"))
+
+  displayBookmark()
 }
 
 //display funciton
 function displayBookmark() {
   var cartona = ""
-
-  // Determine how many bookmarks to display
-  let displayCount = bookmarkContainers.length
-  if (bookmarkLimit !== "all") {
-    displayCount = Math.min(Number.parseInt(bookmarkLimit), bookmarkContainers.length)
-  }
-
-  for (var i = 0; i < displayCount; i++) {
+  for (var i = 0; i < bookmarkContainers.length; i++) {
+    const isEditing = i === currentEditIndex
     cartona += `
-    <tr class="animate__animated animate__fadeIn" style="animation-delay: ${i * 0.1}s">
+    <tr class="animate__animated animate__fadeIn ${isEditing ? "editing-row" : ""}" style="animation-delay: ${i * 0.1}s">
     <td>${i + 1}</td>
     <td>${bookmarkContainers[i].siteName}</td>
     <td>
     <a target="_blank" class="btn btn-danger" href="https://www.${bookmarkContainers[i].siteUrl}">
     <i class="fa-solid fa-eye pe-2"></i> Visit</a></td>
     <td>
-    <button onclick='deleteBookmark(${i})'  class="btn btn-warning">
+    <button onclick='editBookmark(${i})' class="btn btn-info">
+    <i class="fa-solid fa-edit"></i> Edit
+    </button>
+    </td>
+    <td>
+    <button onclick='deleteBookmark(${i})' class="btn btn-warning">
     <i class="fa-solid fa-trash-can"></i> Delete
     </button>
     </td>
@@ -120,19 +260,6 @@ function displayBookmark() {
     
     `
   }
-
-  // Add a message if there are more bookmarks than shown
-  if (bookmarkLimit !== "all" && bookmarkContainers.length > displayCount) {
-    const remaining = bookmarkContainers.length - displayCount
-    cartona += `
-    <tr>
-      <td colspan="4" class="text-center text-muted">
-        <em>Showing ${displayCount} of ${bookmarkContainers.length} bookmarks. ${remaining} more hidden.</em>
-      </td>
-    </tr>
-    `
-  }
-
   bookmarkTbody.innerHTML = cartona
 }
 
@@ -147,6 +274,11 @@ function clear() {
 }
 
 function deleteBookmark(index) {
+  // If deleting the bookmark being edited, reset the edit state
+  if (index === currentEditIndex) {
+    cancelEdit()
+  }
+
   // Add animation before removing
   const rows = document.querySelectorAll("#tbodyContent tr")
   if (rows[index]) {
@@ -175,51 +307,32 @@ function search(inputValue) {
     return
   }
 
-  const matchedBookmarks = bookmarkContainers.filter((bookmark) =>
-    bookmark.siteName.toLowerCase().includes(inputValue.toLowerCase()),
-  )
-
-  // Apply bookmark limit to search results if needed
-  let displayCount = matchedBookmarks.length
-  if (bookmarkLimit !== "all") {
-    displayCount = Math.min(Number.parseInt(bookmarkLimit), matchedBookmarks.length)
-  }
-
-  for (var i = 0; i < displayCount; i++) {
-    const bookmark = matchedBookmarks[i]
-    const originalIndex = bookmarkContainers.indexOf(bookmark)
-
-    cartona += `
-    <tr class="animate__animated animate__fadeIn">
-      <td>${originalIndex + 1}</td>
-      <td>${bookmark.siteName.replace(
-      new RegExp(inputValue, "gi"),
-      `<span class="text-primary animate__animated animate__flash animate__delay-1s">${inputValue}</span>`,
-    )}</td>
-      <td>
-        <a target="_blank" class="btn btn-danger" href="https://www.${bookmark.siteUrl}">
-          <i class="fa-solid fa-eye pe-2"></i> Visit
-        </a>
-      </td>
-      <td>
-        <button onclick='deleteBookmark(${originalIndex})' class="btn btn-warning">
-          <i class="fa-solid fa-trash-can"></i> Delete
-        </button>
-      </td>
-    </tr>
-    `
-  }
-
-  // Add a message if there are more search results than shown
-  if (bookmarkLimit !== "all" && matchedBookmarks.length > displayCount) {
-    const remaining = matchedBookmarks.length - displayCount
-    cartona += `
-    <tr>
-      <td colspan="4" class="text-center text-muted">
-        <em>Showing ${displayCount} of ${matchedBookmarks.length} matching bookmarks. ${remaining} more hidden.</em>
-      </td>
-    </tr>
-    `
+  for (var i = 0; i < bookmarkContainers.length; i++) {
+    if (bookmarkContainers[i].siteName.toLowerCase().includes(inputValue.toLowerCase())) {
+      const isEditing = i === currentEditIndex
+      cartona += `
+      <tr class="animate__animated animate__fadeIn ${isEditing ? "editing-row" : ""}">
+              <td>${i + 1}</td>
+              <td>${bookmarkContainers[i].siteName.replace(
+        new RegExp(inputValue, "gi"),
+        `<span class="text-primary animate__animated animate__flash animate__delay-1s">${inputValue}</span>`,
+      )}</td>
+             <td>
+    <a target="_blank" class="btn btn-danger" href="https://www.${bookmarkContainers[i].siteUrl}">
+    <i class="fa-solid fa-eye pe-2"></i> Visit</a></td>
+              <td>
+              <button onclick='editBookmark(${i})' class="btn btn-info">
+              <i class="fa-solid fa-edit"></i> Edit
+              </button>
+              </td>
+              <td>
+              <button onclick='deleteBookmark(${i})' class="btn btn-warning">
+             <i class="fa-solid fa-trash-can"></i> Delete
+              </button>
+              </td>
+            </tr>
+      `
+    }
   }
 
   bookmarkTbody.innerHTML = cartona
@@ -292,9 +405,15 @@ function capitalize(str) {
   return strArr.join("")
 }
 
-// Initialize animations
+// Initialize animations and theme
 document.addEventListener("DOMContentLoaded", () => {
-  // Start typewriter effect
+  // Load theme preference
+  loadTheme()
+
+  // Theme toggle event listener
+  themeToggle.addEventListener("click", toggleTheme)
+
+  // Start typewriter effect for subtitle
   typewriterEffect()
 
   // Add hover effects to buttons
@@ -320,5 +439,12 @@ document.addEventListener("DOMContentLoaded", () => {
         icon.classList.remove("animate__animated", "animate__heartBeat")
       }, 1000)
     }, 5000)
+  })
+
+  // Add keyboard shortcut for cancel (Escape key)
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && currentEditIndex !== -1) {
+      cancelEdit()
+    }
   })
 })

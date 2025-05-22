@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="light-mode">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="images/image.png" />
     <title>Book Mark</title>
     <!-- *Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -22,13 +21,21 @@
     />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   </head>
-  <body class="main-bg">
+  <body>
     <!-- Preloader -->
     <div id="preloader">
       <div class="bookmark-loader">
         <i class="fa-solid fa-bookmark"></i>
       </div>
     </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle">
+      <button id="themeToggle" class="btn theme-btn">
+        <i class="fa-solid fa-sun"></i>
+      </button>
+    </div>
+
     <div
       class="container d-flex flex-column align-items-center justify-content-center py-5 animate__animated animate__fadeIn"
     >
@@ -42,9 +49,9 @@
         data-aos="fade-up"
         data-aos-duration="800"
       >
-        <h2 class="pb-4">
+        <h2 class="pb-4" id="typewriter-subtitle">
           <i class="fa-solid fa-bookmark"></i>
-          Bookmark your Favourite Sites
+          <span class="typewriter-text">Bookmark your Favourite Sites</span>
           <i class="fa-solid fa-bookmark"></i>
         </h2>
         <div
@@ -86,14 +93,32 @@
             <span class="text-secondary">https://www.example.com</span>
           </p>
         </div>
-        <button
-          onclick="addBookmark()"
-          type="button"
-          class="btn btn-submit px-5 pulse-btn"
-          id="submitBtn"
-        >
-          Submit
-        </button>
+        <div class="d-flex w-100 justify-content-between">
+          <button
+            onclick="addBookmark()"
+            type="button"
+            class="btn btn-submit px-5 pulse-btn"
+            id="submitBtn"
+          >
+            Submit
+          </button>
+          <button
+            onclick="updateBookmark()"
+            type="button"
+            class="btn btn-update px-5 d-none"
+            id="updateBtn"
+          >
+            Update Bookmark
+          </button>
+          <button
+            onclick="cancelEdit()"
+            type="button"
+            class="btn btn-cancel px-5 d-none"
+            id="cancelBtn"
+          >
+            Cancel
+          </button>
+        </div>
         <input
           type="text"
           class="form-control my-3"
@@ -102,7 +127,7 @@
         />
       </div>
       <table
-        class="table mt-4 text-center bg-light"
+        class="table mt-4 text-center"
         data-aos="fade-up"
         data-aos-delay="200"
       >
@@ -111,6 +136,7 @@
             <th class="text-capitalize">index</th>
             <th class="text-capitalize">Website Name</th>
             <th class="text-capitalize">Visit</th>
+            <th class="text-capitalize">Update</th>
             <th class="text-capitalize">Delete</th>
           </tr>
         </thead>
