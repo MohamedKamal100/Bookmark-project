@@ -15,14 +15,31 @@
     <link rel="stylesheet" href="css/all.min.css" />
     <link rel="stylesheet" href="css/bootstrap.min.css" />
     <link rel="stylesheet" href="css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
   </head>
   <body class="main-bg">
+    <!-- Preloader -->
+    <div id="preloader">
+      <div class="bookmark-loader">
+        <i class="fa-solid fa-bookmark"></i>
+      </div>
+    </div>
     <div
-      class="container d-flex flex-column align-items-center justify-content-center py-5"
+      class="container d-flex flex-column align-items-center justify-content-center py-5 animate__animated animate__fadeIn"
     >
-      <h1 class="position-relative py-3">Bookmarker</h1>
+      <h1
+        class="position-relative py-3 animate__animated animate__pulse animate__delay-1s"
+      >
+        Bookmarker
+      </h1>
       <div
         class="content w-100 p-3 py-4 mt-5 d-flex flex-column justify-content-center align-items-center"
+        data-aos="fade-up"
+        data-aos-duration="800"
       >
         <h2 class="pb-4">
           <i class="fa-solid fa-bookmark"></i>
@@ -71,7 +88,7 @@
         <button
           onclick="addBookmark()"
           type="button"
-          class="btn btn-submit px-5"
+          class="btn btn-submit px-5 pulse-btn"
           id="submitBtn"
         >
           Submit
@@ -83,7 +100,11 @@
           onkeyup="search(this.value)"
         />
       </div>
-      <table class="table mt-4 text-center bg-light">
+      <table
+        class="table mt-4 text-center bg-light"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
         <thead>
           <tr>
             <th class="text-capitalize">index</th>
@@ -99,5 +120,15 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="js/index.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+      // Initialize AOS
+      AOS.init();
+
+      // Preloader
+      window.addEventListener("load", function () {
+        document.getElementById("preloader").style.display = "none";
+      });
+    </script>
   </body>
 </html>

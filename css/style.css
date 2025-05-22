@@ -1,5 +1,40 @@
+/* Preloader */
+#preloader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f7ecde;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.bookmark-loader {
+  animation: bookmark-bounce 1.5s infinite;
+}
+
+.bookmark-loader i {
+  font-size: 5rem;
+  color: #d1512d;
+}
+
+@keyframes bookmark-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
 .main-bg {
   background-color: #f7ecde;
+  background-image: radial-gradient(#d1512d20 1px, transparent 1px);
+  background-size: 20px 20px;
 }
 body {
   font-family: "PT Sans Caption", sans-serif;
@@ -16,7 +51,13 @@ h1 {
   font-size: 50px;
   font-weight: 500;
   line-height: 60px;
+  transition: transform 0.3s ease;
 }
+
+h1:hover {
+  transform: scale(1.05);
+}
+
 h1::after {
   content: "";
   position: absolute;
@@ -26,16 +67,29 @@ h1::after {
   background-color: #fec260;
   height: 22%;
   z-index: -1;
-  transition: height 300ms;
+  transition: height 300ms, width 300ms;
 }
+
 h1:hover::after {
   height: 50%;
+  width: 110%;
+  left: -5%;
 }
 
 .content {
   border-style: dotted;
   border-width: 2px 0 2px;
   color: #352e28;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(5px);
+}
+
+.content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 
 .content h2 {
@@ -46,12 +100,46 @@ h1:hover::after {
   text-fill-color: transparent;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.content h2 i {
+  transition: transform 0.3s ease;
+}
+
+.content h2:hover i {
+  transform: scale(1.2) rotate(10deg);
 }
 
 /* =======================buttons================ */
+
+.form-control {
+  transition: all 0.3s ease;
+  border: 1px solid #ced4da;
+}
+
 .form-control:focus {
   box-shadow: 0 0 0 0.25rem #fec16092;
+  transform: translateY(-2px);
 }
+
+.form-control.is-valid {
+  animation: validPulse 0.5s ease;
+}
+
+@keyframes validPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .content .btn-submit {
   --bs-btn-color: #fff;
   --bs-btn-bg: #d1512d;
@@ -59,5 +147,70 @@ h1:hover::after {
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #bb4120;
   --bs-btn-hover-border-color: #a03315;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
+
+.content .btn-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(209, 81, 45, 0.4);
+}
+
+.content .btn-submit:active {
+  transform: translateY(1px);
+}
+
+.pulse-btn {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(209, 81, 45, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(209, 81, 45, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(209, 81, 45, 0);
+  }
+}
+
 /* ================================================== */
+
+table {
+  transition: all 0.3s ease;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+table:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+thead {
+  background-color: #d1512d;
+  color: white;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: rgba(254, 194, 96, 0.2) !important;
+  transform: translateY(-2px);
+}
+
+.btn-danger,
+.btn-warning {
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover,
+.btn-warning:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
